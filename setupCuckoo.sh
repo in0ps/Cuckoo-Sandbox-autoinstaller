@@ -4,6 +4,7 @@
 #AUTOINSTALL WIN7
 set -e
 USER_NAME=${HOME#/*/}
+HOME_DIR=$(pwd)
 
 welcome(){
 	printf "Use --help for more info.
@@ -19,7 +20,7 @@ Do you want to continue? [y/n] "
 	else
 		printf "Enter your main network interface: "
 		read NETWORK_INTERFACE
-		sed -i -e 's/internet = enp0s3/internet =' $NETWORK_INTERFACE'/g' ./confFolder/cuckoo/routing.conf
+		sed -i -e "s/internet =/internet = $NETWORK_INTERFACE/g" $HOME_DIR/confFolder/cuckoo/routing.conf
 	fi
 
 }
@@ -90,7 +91,7 @@ snort(){
 #----honeyd----------
 honeyd(){
 	sudo apt-get install git -y
-	cd  $HOME/sources 
+	cd  $HOME/sources
 	git clone https://github.com/DataSoft/Honeyd
 	cd $HOME/sources/Honeyd
 	sudo apt-get install libevent-dev libdumbnet-dev libpcap-dev libpcre3-dev libedit-dev bison flex libtool automake -y
@@ -145,12 +146,13 @@ moloch(){
 }
 #------SSDeep-------
 ssdeep(){
-	sudo -H pip install -U ssdeep
+	pip install -U ssdeep==3.2
 }
 #-----Volatility------
 volatility(){
 	cd $HOME/sources
 	git clone https://github.com/volatilityfoundation/volatility
+	sudo apt install volatility -y
 }
 #-------Distorm3------
 distorm3(){
@@ -195,7 +197,7 @@ yara_rules(){
 
 	python -m pip install -U cuckoo
 
-	pip install m2crypto
+	pip install m2crypto==0.38.0
 
 	cuckoo
 	cuckoo community
@@ -203,8 +205,7 @@ yara_rules(){
 	sudo apt-get install libyaml-dev libpython2.7-dev genisoimage -y
 	pip install -U cuckoo vmcloak
 	cd $HOME
-	sudo -H pip install m2crypto
-	sudo -H pip install -U ssdeep
+	sudo -H pip install -U ssdeep==3.2
 	python -m pip install distorm3
 	vmcloak-vboxnet0 
 	#sudo vmcloak-iptables 192.168.56.0/24 enp0s3
@@ -366,7 +367,7 @@ if [[ "$1" = "full" ]]; then
 	cd $HOME
 	m2crypto
 	suricata
-	honeyd	
+	honeyd
 	inetsim
 	tesseract
 	elastisearch

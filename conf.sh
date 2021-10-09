@@ -68,7 +68,9 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
+
 if [[ "$1" == "before" ]]; then
+	echo
 	before_reboot
 	exit
 fi
